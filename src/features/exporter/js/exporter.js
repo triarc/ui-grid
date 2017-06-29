@@ -210,6 +210,14 @@
           gridOptions.exporterCsvColumnSeparator = gridOptions.exporterCsvColumnSeparator ? gridOptions.exporterCsvColumnSeparator : ',';
           /**
            * @ngdoc object
+           * @name exporterCsvEncoding
+           * @propertyOf  ui.grid.exporter.api:GridOptions
+           * @description The default encoding to use when saving the downloaded csv.
+           * <br/>Defaults to 'utf-8'
+           */
+          gridOptions.exporterCsvEncoding = gridOptions.exporterCsvEncoding ? gridOptions.exporterCsvEncoding : 'utf-8';
+          /**
+           * @ngdoc object
            * @name exporterCsvFilename
            * @propertyOf  ui.grid.exporter.api:GridOptions
            * @description The default filename to use when saving the downloaded csv.
@@ -643,7 +651,7 @@
             var exportData = self.getData(grid, rowTypes, colTypes);
             var csvContent = self.formatAsCsv(exportColumnHeaders, exportData, grid.options.exporterCsvColumnSeparator);
 
-            self.downloadFile (grid.options.exporterCsvFilename, csvContent, grid.options.exporterCsvColumnSeparator, grid.options.exporterOlderExcelCompatibility, grid.options.exporterIsExcelCompatible);
+            self.downloadFile (grid.options.exporterCsvFilename, csvContent, grid.options.exporterCsvEncoding, grid.options.exporterCsvColumnSeparator, grid.options.exporterOlderExcelCompatibility, grid.options.exporterIsExcelCompatible);
           });
         },
 
@@ -925,13 +933,15 @@
          * given
          * @param {string} csvContent the csv content that we'd like to
          * download as a file
+         * @param {string} exporterCsvEncoding the csv encoding
+         * @param {string} columnSeparator the csv separator
          * @param {boolean} exporterOlderExcelCompatibility whether or not we put a utf-16 BOM on the from (\uFEFF)
-          * @param {boolean} exporterIsExcelCompatible whether or not we add separator header ('sep=X')
+         * @param {boolean} exporterIsExcelCompatible whether or not we add separator header ('sep=X')
          */
-        downloadFile: function (fileName, csvContent, columnSeparator, exporterOlderExcelCompatibility, exporterIsExcelCompatible) {
+        downloadFile: function (fileName, csvContent, exporterCsvEncoding, columnSeparator, exporterOlderExcelCompatibility, exporterIsExcelCompatible) {
           var D = document;
           var a = D.createElement('a');
-          var strMimeType = 'application/octet-stream;charset=utf-8';
+          var strMimeType = 'application/octet-stream;charset=' + exporterCsvEncoding;
           var rawFile;
           var ieVersion = this.isIE();
 
